@@ -192,6 +192,11 @@
       Kakao.Share.createScrapButton({
         container: '#kakaotalk-sharing-btn',
         requestUrl: generateShareUrl(),  // 스크랩 할 URL 입력
+        templateId: 122936,
+        templateArgs: {
+          "CASH_TITLE": settlement_title,
+          "CASH_CONTENT": window.kakaoShareContent
+        }
       });
       
   
