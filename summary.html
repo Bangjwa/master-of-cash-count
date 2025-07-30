@@ -10,26 +10,54 @@
   </style>
 </head>
 <body>
-  <h2>📋 정산 결과</h2>
+  <h2 id="title">📋 정산 결과</h2>
   <div id="summary"></div>
 
   <script>
     function parseQueryParams() {
       const params = new URLSearchParams(window.location.search);
       const total = params.get("total");
+      const title = decodeURIComponent(params.get("title") || "정산 내역");
       const peopleStr = params.get("people");
+      const breakdownStr = params.get("breakdown");
+
+      document.getElementById("title").innerText = `📋 ${title}`;
 
       let html = "";
       if (total) {
         html += `<p>총 정산 금액: <span class="amount">₩${Number(total).toLocaleString()}</span></p>`;
       }
 
+      const breakdownMap = {};
+      if (breakdownStr) {
+        breakdownStr.split(",").forEach(entry => {
+          const [name, details] = entry.split("=");
+          const sectionList = details.split("|");
+          breakdownMap[decodeURIComponent(name)] = sectionList.map(item => {
+            const [section, amount] = item.split(":");
+            return { section, amount: Number(amount) };
+          });
+        });
+      }
+
       if (peopleStr) {
         html += `<ul>`;
         const people = peopleStr.split(",");
         people.forEach(pair => {
-          const [name, amount] = pair.split(":");
-          html += `<li>${decodeURIComponent(name)}: ₩${Number(amount).toLocaleString()}</li>`;
+          const [nameEncoded, amount] = pair.split(":");
+          const name = decodeURIComponent(nameEncoded);
+          html += `<li><strong>${name}</strong>: ₩${Number(amount).toLocaleString()}`;
+
+          const breakdown = breakdownMap[name];
+          if (breakdown && breakdown.length > 0) {
+            html += `<ul>`;
+            breakdown.forEach(part => {
+              html += `<li>${part.section}: ₩${part.amount.toLocaleString()}</li>`;
+            });
+            html += `</ul>`;
+          }
+
+          html += `</li>`;
         });
         html += `</ul>`;
       } else {
