@@ -53,6 +53,11 @@
   <h2>정산왕캐시킹 (카톡정산도우미)</h2>
 
   <div class="card">
+    <label>정산명</label>
+    <input type="text" id="settlement_title" placeholder="예: 2025년 1월 1일 화경 미스터유" />
+  </div>
+  
+  <div class="card">
     <label>정산 총액</label>
     <input type="number" id="totalAmount" placeholder="예: 100000" />
   </div>
@@ -155,6 +160,37 @@
       });
       document.getElementById("result").innerHTML = resultText;
     }
+
+    function validateAndShare() {
+      const settlement_title = document.getElementById("settlement_title").value.trim();
+      const cashTotal = document.getElementById("cash_total").value.trim();
+  
+      // 유효성 검사
+      if (settlement_title === "") {
+        alert("정산명을 입력해주세요.");
+        return;
+      }
+  
+      // 카카오톡 공유 실행
+      Kakao.Share.sendCustom({
+        templateId: 122936,
+        templateArgs: {
+          "CASH_TITLE": settlement_title,
+          "CASH_CONTENT": window.kakaoShareContent
+        }
+      });
+    }
+
+    let shareContent = `총 정산 금액: ₩${totalAmount.toLocaleString()}\n\n`;
+
+    for (const [name, info] of Object.entries(personMap)) {
+      const amount = Math.round(info.amount);
+      const categories = Array.from(info.categories).join(', ');
+      shareContent += `• ${name}: ₩${amount.toLocaleString()} (${categories})\n`;
+    }
+    
+    // 전역 변수로 저장
+    window.kakaoShareContent = shareContent;
   </script>
 
 </body>
