@@ -84,6 +84,13 @@
     <div id="result" class="result"></div>
   </div>
 
+  <div id="shareBtnContainer" style="display:none; text-align:center; margin-top: 20px;">
+    <a id="kakaotalk-sharing-btn" href="javascript:void(0);" onclick="validateAndShare()">
+      <img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
+        alt="카카오톡 공유 보내기 버튼" />
+    </a>
+  </div>
+
   <script>
     function parsePeople(str) {
       return str.split(',').map(p => p.trim()).filter(Boolean);
@@ -127,10 +134,14 @@
       let summaryText = `총액: ₩${total.toLocaleString()}<br/>항목 합계: ₩${sectionSum.toLocaleString()}<br/>`;
       if (diff === 0) {
         summaryText += "<strong>정산 총액과 항목 합계가 일치합니다.</strong>";
-      } else if (diff > 0) {
-        summaryText += `<strong>₩${diff.toLocaleString()} 미달입니다.</strong>`;
+        document.getElementById("shareBtnContainer").style.display = "block";  // 공유 버튼 표시
       } else {
-        summaryText += `<strong>₩${Math.abs(diff).toLocaleString()} 초과입니다.</strong>`;
+        if (diff > 0) {
+          summaryText += `<strong>₩${diff.toLocaleString()} 미달입니다.</strong>`;
+        } else {
+          summaryText += `<strong>₩${Math.abs(diff).toLocaleString()} 초과입니다.</strong>`;
+        }
+        document.getElementById("shareBtnContainer").style.display = "none";  // 공유 버튼 숨김
       }
       document.getElementById("summary").innerHTML = summaryText;
     
