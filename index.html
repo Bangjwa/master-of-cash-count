@@ -3,247 +3,96 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>정산왕캐시킹</title>
+  <title>정산 계산기</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: 'Helvetica Neue', Arial, sans-serif;
-      background-color: #f9f9f9;
-      color: #333;
-      line-height: 1.6;
-      padding: 1rem;
-    }
-
-    header {
-      background-color: #4a90e2;
-      color: white;
-      padding: 1rem;
-      text-align: center;
-      font-size: 1.5rem;
-      border-radius: 8px;
-    }
-
-    .container {
-      margin-top: 1rem;
-    }
-
-    .card {
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      padding: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    button {
-      width: 100%;
-      padding: 0.75rem;
-      font-size: 1rem;
-      background-color: #4a90e2;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #3a78c2;
-    }
-
-    @media (min-width: 600px) {
-      .container {
-        max-width: 500px;
-        margin: 2rem auto;
-      }
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Helvetica Neue', Arial, sans-serif; padding: 1rem; background: #f7f9fc; color: #333; }
+    header { background: #4a90e2; color: white; padding: 1rem; text-align: center; border-radius: 8px; margin-bottom: 1rem; font-size: 1.4rem; }
+    .section { background: white; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    h2 { margin-bottom: 0.5rem; font-size: 1.2rem; }
+    label { display: block; margin-top: 0.5rem; }
+    input[type="text"], input[type="number"] { width: 100%; padding: 0.5rem; margin-top: 0.25rem; border: 1px solid #ccc; border-radius: 4px; }
+    textarea { width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px; margin-top: 0.25rem; }
+    .result { font-weight: bold; margin-top: 1rem; }
+    button { width: 100%; margin-top: 1rem; padding: 0.75rem; font-size: 1rem; background-color: #4a90e2; color: white; border: none; border-radius: 6px; cursor: pointer; }
   </style>
 </head>
 <body>
-  <img src="https://bangjwa.github.io/master-of-cash-count/cach-count-top.png" style="width: 100%" />
-  <header>
-    정산왕캐시킹 (카톡정산도우미)
-  </header>
+  <header>정산 계산기</header>
 
-  <div class="container">
-    <div class="card">
-      <h2>정산명</h2>
-      <p><input type="text" id="cash_title" placeholder="예: 2025년 1월 1일 화경 미스터유" /></p>
-    </div>
-
-    <div class="card">
-      <h2>정산총액</h2>
-      <p>영수증의 정산 총액을 입력하세요.</p>
-      <p><input type="number" id="cash_total" placeholder="예: 135000" value=0 /></p>
-    </div>
-
-    <div class="card">
-      <h2>술/안주</h2>
-      <p>인원 이름 (쉼표로 구분)</p>
-      <input type="text" id="people_drink" placeholder="예: 유성, 재현, 수지" oninput="calculateSectionTotal('drink')" />
-      
-      <p>1인당 금액 (₩)</p>
-      <input type="number" id="amount_per_person_drink" placeholder="예: 15000" oninput="calculateSectionTotal('drink')" />
-    
-      <p>총 금액: <strong id="total_drink">₩0</strong></p>
-    </div>
-    
-    <div class="card">
-      <h2>안주</h2>
-      <p>인원 이름 (쉼표로 구분)</p>
-      <input type="text" id="people_food" placeholder="예: 유성, 재현" oninput="calculateSectionTotal('food')" />
-    
-      <p>1인당 금액 (₩)</p>
-      <input type="number" id="amount_per_person_food" placeholder="예: 10000" oninput="calculateSectionTotal('food')" />
-    
-      <p>총 금액: <strong id="total_food">₩0</strong></p>
-    </div>
-    
-    <div class="card">
-      <h2>기타 (별도 사유)</h2>
-      <p>사유</p>
-      <input type="text" id="reason_etc" placeholder="예: 늦참" />
-      <p>인원 이름 (쉼표로 구분)</p>
-      <input type="text" id="people_etc" placeholder="예: 수지" oninput="calculateSectionTotal('etc')" />
-    
-      <p>1인당 금액 (₩)</p>
-      <input type="number" id="amount_per_person_etc" placeholder="예: 5000" oninput="calculateSectionTotal('etc')" />
-    
-      <p>총 금액: <strong id="total_etc">₩0</strong></p>
-    </div>    
-
-    <div class="card">
-      <h2>합산 요약</h2>
-      <p>술/안주 정산 총액: <strong id="total_drink_summary">₩0</strong></p>
-      <p>안주 정산 총액: <strong id="total_food_summary">₩0</strong></p>
-      <p>기타 정산 총액: <strong id="total_etc_summary">₩0</strong></p>
-      <hr />
-      <p>정산 총액: <strong id="cash_total_display">₩0</strong></p>
-      <p>입력된 합산 총액: <strong id="total_all_sections">₩0</strong></p>
-      <p id="compare_result" style="font-weight: bold; color: #d9534f;">정산금액이 일치하지 않습니다.</p>
-      <p id="difference_result" style="font-weight: bold; color: #999;"></p>
-    </div>
-
-    <div class="card">
-      <h2>정산계좌 (저장되지 않음)</h2>
-      <p>은행명 <input type="text" id="bank_name" placeholder="예: 기업"/> 계좌입력 <input type="number" id="back_account" placeholder="- 없이 숫자만 입력"/> 계좌명 <input type="text" id="account_name" placeholder="예: 정산킹" /></p>
-      <p><input type="checkbox" id="cash_available_kakaopay" checked /> 카카오페이 가능 여부</p>
-      <p><input type="checkbox" id="cash_available_kakaopay" checked /> 닉네임으로 입금요함 기재 여부</p>
-    </div>
-
-    <div class="card">
-      <h2>정산방 공유하기</h2>
-      <a id="kakaotalk-sharing-btn" href="javascript:void(0);" onclick="validateAndShare()">
-        <img src="https://developers.kakao.com/assets/img/about/logos/kakaotalksharing/kakaotalk_sharing_btn_medium.png"
-          alt="카카오톡 공유 보내기 버튼" />
-      </a>
-    </div>
-
-    
+  <div class="section">
+    <h2>1. 정산 총액 입력</h2>
+    <label>정산명 <input type="text" id="title" /></label>
+    <label>총액 <input type="number" id="totalAmount" /></label>
+    <label>술 금액 <input type="number" id="alcoholAmount" /></label>
+    <label>안주 금액 <input type="number" id="foodAmount" /></label>
+    <label>음료 금액 <input type="number" id="beverageAmount" /></label>
+    <label>기타 금액 <input type="number" id="etcAmount" /></label>
+    <div id="sumCheck" class="result"></div>
   </div>
 
-  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js" integrity="sha384-dok87au0gKqJdxs7msEdBPNnKSRT+/mhTVzq+qOhcL464zXwvcrpjeWvyj1kCdq6" crossorigin="anonymous"></script>
+  <div class="section">
+    <h2>2. 항목별 인원 입력</h2>
+    <label>술 (이름 쉼표로 구분)<textarea id="alcoholPeople"></textarea></label>
+    <label>술/안주<textarea id="alcoholFoodPeople"></textarea></label>
+    <label>음료<textarea id="beveragePeople"></textarea></label>
+    <label>음료/안주<textarea id="beverageFoodPeople"></textarea></label>
+    <label>기타<textarea id="etcPeople"></textarea></label>
+  </div>
 
-<script>
-  Kakao.init('bd2feade80422820dca04e50c262ce0c');  // 사용하려는 앱의 JavaScript 키 입력
-</script>
+  <div class="section">
+    <h2>3. 정산 결과</h2>
+    <button onclick="calculate()">정산하기</button>
+    <div id="results" class="result"></div>
+  </div>
 
-<script>
-    function calculateSectionTotal(type) {
-    const peopleInput = document.getElementById(`people_${type}`).value;
-    const amountInput = parseInt(document.getElementById(`amount_per_person_${type}`).value || "0", 10);
-    const peopleList = peopleInput
-      .split(',')
-      .map(p => p.trim())
-      .filter(p => p !== "");
+  <script>
+    function calculate() {
+      const total = Number(document.getElementById('totalAmount').value || 0);
+      const alcohol = Number(document.getElementById('alcoholAmount').value || 0);
+      const food = Number(document.getElementById('foodAmount').value || 0);
+      const beverage = Number(document.getElementById('beverageAmount').value || 0);
+      const etc = Number(document.getElementById('etcAmount').value || 0);
 
-    const total = peopleList.length * amountInput;
-    document.getElementById(`total_${type}`).textContent = `₩${total.toLocaleString()}`;
-    document.getElementById(`total_${type}_summary`).textContent = `₩${total.toLocaleString()}`;
+      const splitTotal = alcohol + food + beverage + etc;
+      const sumCheckEl = document.getElementById('sumCheck');
 
-    updateSummary();
-  }
+      let diff = total - splitTotal;
+      let status = diff === 0 ? '정상' : (diff > 0 ? `미달 ₩${diff.toLocaleString()}` : `초과 ₩${Math.abs(diff).toLocaleString()}`);
+      sumCheckEl.innerText = `입력된 항목 합계: ₩${splitTotal.toLocaleString()} / 상태: ${status}`;
 
-  function updateSummary() {
-    const drink = parseCurrency(document.getElementById('total_drink_summary').textContent);
-    const food = parseCurrency(document.getElementById('total_food_summary').textContent);
-    const etc = parseCurrency(document.getElementById('total_etc_summary').textContent);
-    const totalSectionSum = drink + food + etc;
+      const parsePeople = id => (document.getElementById(id).value || '').split(',').map(p => p.trim()).filter(p => p);
 
-    document.getElementById('total_all_sections').textContent = `₩${totalSectionSum.toLocaleString()}`;
+      const alcoholPeople = parsePeople('alcoholPeople');
+      const alcoholFoodPeople = parsePeople('alcoholFoodPeople');
+      const beveragePeople = parsePeople('beveragePeople');
+      const beverageFoodPeople = parsePeople('beverageFoodPeople');
+      const etcPeople = parsePeople('etcPeople');
 
-    const cashTotalInput = parseInt(document.getElementById('cash_total').value || "0", 10);
-    document.getElementById('cash_total_display').textContent = `₩${cashTotalInput.toLocaleString()}`;
+      let payMap = {};
 
-    const compareResult = document.getElementById('compare_result');
-    const differenceResult = document.getElementById('difference_result');
-    
-    if (totalSectionSum === cashTotalInput) {
-      compareResult.textContent = '✅ 정산 총액과 일치합니다.';
-      compareResult.style.color = '#28a745';
-      differenceResult.textContent = '';
-    } else {
-      const diff = totalSectionSum - cashTotalInput;
-      const absDiff = Math.abs(diff).toLocaleString();
-      compareResult.textContent = '❌ 금액이 일치하지 않습니다.';
-      compareResult.style.color = '#d9534f';
-    
-      if (diff > 0) {
-        differenceResult.textContent = `💰 세부 항목 총액이 정산 총액보다 ₩${absDiff} 초과되었습니다.`;
-      } else {
-        differenceResult.textContent = `💸 세부 항목 총액이 정산 총액보다 ₩${absDiff} 부족합니다.`;
+      const addShare = (people, amount) => {
+        const share = people.length ? amount / people.length : 0;
+        people.forEach(name => {
+          if (!payMap[name]) payMap[name] = 0;
+          payMap[name] += share;
+        });
+      };
+
+      addShare(alcoholPeople, alcohol);
+      addShare(alcoholFoodPeople, alcohol + food);
+      addShare(beveragePeople, beverage);
+      addShare(beverageFoodPeople, beverage + food);
+      addShare(etcPeople, etc);
+
+      let resultHtml = '<ul>';
+      for (const [name, amt] of Object.entries(payMap)) {
+        resultHtml += `<li>${name}: ₩${Math.round(amt).toLocaleString()}</li>`;
       }
+      resultHtml += '</ul>';
+
+      document.getElementById('results').innerHTML = resultHtml;
     }
-  }
-
-  function parseCurrency(value) {
-    return parseInt(value.replace(/[₩,]/g, '') || "0", 10);
-  }
-  
-  function validateAndShare() {
-    const cashTitle = document.getElementById("cash_title").value.trim();
-    const cashTotal = document.getElementById("cash_total").value.trim();
-
-    // 유효성 검사
-    if (cashTitle === "") {
-      alert("정산명을 입력해주세요.");
-      return;
-    }
-
-    if (cashTotal === "" || isNaN(cashTotal) || Number(cashTotal) <= 0) {
-      alert("정산총액을 숫자로 정확히 입력해주세요.");
-      return;
-    }
-
-    // 카카오톡 공유 실행
-    Kakao.Share.sendCustom({
-      templateId: 122936,
-      templateArgs: {
-        "CASH_TITLE": cashTitle,
-        "CASH_TOTAL": cashTotal,
-        "CASH_CONTENT": "정산이 도착했어요! 확인해주세요."
-      }
-    });
-  }
-
-  // 입력값 변경 시 요약 업데이트
-  document.getElementById('cash_total').addEventListener('input', updateSummary);
-  
-  // Kakao.Share.createCustomButton({
-  //   container: '#kakaotalk-sharing-btn',
-  //   templateId: 122936,  // 공유 할 메시지 템플릿 ID 입력
-  //   templateArgs: {
-  //     "CASH_TITLE" : cashTitle,
-  //     "CASH_CONTENT" : "본문입니다.",
-  //   }
-  // });
-</script>
-
-
+  </script>
 </body>
 </html>
