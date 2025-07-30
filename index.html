@@ -188,33 +188,33 @@
         return;
       }
 
-      var msgTemplate = settlement_title + "\n" + window.kakaoShareContent;
+      // var msgTemplate = settlement_title + "\n" + window.kakaoShareContent;
 
-      Kakao.API.request({
-        url: '/v2/api/talk/memo/default/send',
-        data: {
-          template_object: {
-                "object_type": "text",
-                "text": msgTemplate
-            },
-          },
-        })
-        .then(function(response) {
-          console.log(response);
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
+      // Kakao.API.request({
+      //   url: '/v2/api/talk/memo/default/send',
+      //   data: {
+      //     template_object: {
+      //           "object_type": "text",
+      //           "text": msgTemplate
+      //       },
+      //     },
+      //   })
+      //   .then(function(response) {
+      //     console.log(response);
+      //   })
+      //   .catch(function(error) {
+      //     console.log(error);
+      //   });
       
   
       // 카카오톡 공유 실행
-      // Kakao.Share.sendCustom({
-      //   templateId: 122936,
-      //   templateArgs: {
-      //     "CASH_TITLE": settlement_title,
-      //     "CASH_CONTENT": window.kakaoShareContent
-      //   }
-      // });
+      Kakao.Share.sendCustom({
+        templateId: 122936,
+        templateArgs: {
+          "CASH_TITLE": settlement_title,
+          "CASH_CONTENT": window.kakaoShareContent
+        }
+      });
     }
   </script>
 
