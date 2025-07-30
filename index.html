@@ -96,6 +96,12 @@
     </a>
   </div>
 
+  <script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.5/kakao.min.js" integrity="sha384-dok87au0gKqJdxs7msEdBPNnKSRT+/mhTVzq+qOhcL464zXwvcrpjeWvyj1kCdq6" crossorigin="anonymous"></script>
+
+  <script>
+    Kakao.init('bd2feade80422820dca04e50c262ce0c');  // 사용하려는 앱의 JavaScript 키 입력
+  </script>
+
   <script>
     function parsePeople(str) {
       return str.split(',').map(p => p.trim()).filter(Boolean);
