@@ -85,20 +85,35 @@
 
     <div class="card">
       <h2>술/안주</h2>
-      <p>인원 표기</p>
-      <p>1인당 <strong>₩1,250,000</strong>입니다.</p>
+      <p>인원 이름 (쉼표로 구분)</p>
+      <input type="text" id="people_drink" placeholder="예: 유성, 재현, 수지" oninput="calculateSectionTotal('drink')" />
+      
+      <p>1인당 금액 (₩)</p>
+      <input type="number" id="amount_per_person_drink" placeholder="예: 15000" oninput="calculateSectionTotal('drink')" />
+    
+      <p>총 금액: <strong id="total_drink">₩0</strong></p>
     </div>
-
+    
     <div class="card">
       <h2>안주</h2>
-      <p>인원 표기</p>
-      <p>1인당 <strong>₩1,250,000</strong>입니다.</p>
+      <p>인원 이름 (쉼표로 구분)</p>
+      <input type="text" id="people_food" placeholder="예: 유성, 재현" oninput="calculateSectionTotal('food')" />
+    
+      <p>1인당 금액 (₩)</p>
+      <input type="number" id="amount_per_person_food" placeholder="예: 10000" oninput="calculateSectionTotal('food')" />
+    
+      <p>총 금액: <strong id="total_food">₩0</strong></p>
     </div>
-
+    
     <div class="card">
       <h2>기타 (별도 사유)</h2>
-      <p>인원 표기</p>
-      <p>1인당 <strong>₩1,250,000</strong>입니다.</p>
+      <p>인원 이름 (쉼표로 구분)</p>
+      <input type="text" id="people_etc" placeholder="예: 수지" oninput="calculateSectionTotal('etc')" />
+    
+      <p>1인당 금액 (₩)</p>
+      <input type="number" id="amount_per_person_etc" placeholder="예: 5000" oninput="calculateSectionTotal('etc')" />
+    
+      <p>총 금액: <strong id="total_etc">₩0</strong></p>
     </div>    
 
     <div class="card">
@@ -132,6 +147,18 @@
 </script>
 
 <script>
+  function calculateSectionTotal(type) {
+    const peopleInput = document.getElementById(`people_${type}`).value;
+    const amountInput = parseInt(document.getElementById(`amount_per_person_${type}`).value || "0", 10);
+    const peopleList = peopleInput
+      .split(',')
+      .map(p => p.trim())
+      .filter(p => p !== "");
+
+    const total = peopleList.length * amountInput;
+    document.getElementById(`total_${type}`).textContent = `₩${total.toLocaleString()}`;
+  }
+  
   function validateAndShare() {
     const cashTitle = document.getElementById("cash_title").value.trim();
     const cashTotal = document.getElementById("cash_total").value.trim();
