@@ -70,10 +70,24 @@
   </div>
 
   <div class="card">
+    <label>추가 술 금액</label>
+    <input type="number" id="addAlcoholAmount" placeholder="예: 20000" />
+    <label>추가 술 참여자 (쉼표로 구분)</label>
+    <input type="text" id="addAlcoholPeople" placeholder="예: 홍길동,김철수" />
+  </div>
+
+  <div class="card">
     <label>안주 금액</label>
     <input type="number" id="foodAmount" placeholder="예: 20000" />
     <label>안주 참여자 (쉼표로 구분)</label>
     <input type="text" id="foodPeople" placeholder="예: 홍길동,김철수" />
+  </div>
+
+  <div class="card">
+    <label>추가 안주 금액</label>
+    <input type="number" id="addFoodAmount" placeholder="예: 20000" />
+    <label>추가 안주 참여자 (쉼표로 구분)</label>
+    <input type="text" id="addFoodPeople" placeholder="예: 홍길동,김철수" />
   </div>
 
   <div class="card">
@@ -83,7 +97,7 @@
     <input type="text" id="beveragePeople" placeholder="예: 홍길동,김철수" />
   </div>
 
-  <!-- <div class="card">
+  <div class="card">
     <label>기타 1</label>
     <input type="text" id="etc1Reason" placeholder="예: 늦참" />
     <input type="number" id="etc1Amount" placeholder="예: 20000" />
@@ -97,7 +111,7 @@
     <input type="number" id="etc2Amount" placeholder="예: 20000" />
     <label>기타 2 해당자 (쉼표로 구분)</label>
     <input type="text" id="etc2People" placeholder="예: 홍길동,김철수" />
-  </div> -->
+  </div>
 
   <div class="card">
     <button onclick="calculate()">정산 계산하기</button>
@@ -132,14 +146,34 @@
           people: parsePeople(document.getElementById("alcoholPeople").value)
         },
         {
+          key: "추가 술",
+          amount: Number(document.getElementById("addAlcoholAmount").value || 0),
+          people: parsePeople(document.getElementById("addAlcoholPeople").value)
+        },
+        {
           key: "안주",
           amount: Number(document.getElementById("foodAmount").value || 0),
           people: parsePeople(document.getElementById("foodPeople").value)
         },
         {
+          key: "추가 안주",
+          amount: Number(document.getElementById("addFoodAmount").value || 0),
+          people: parsePeople(document.getElementById("addFoodPeople").value)
+        },
+        {
           key: "음료",
           amount: Number(document.getElementById("beverageAmount").value || 0),
           people: parsePeople(document.getElementById("beveragePeople").value)
+        },
+        {
+          key: "기타 1 (" + document.getElementById("etc1Reason").value + ")",
+          amount: Number(document.getElementById("etc1Amount").value || 0),
+          people: parsePeople(document.getElementById("etc1People").value)
+        },
+        {
+          key: "기타 2 (" + document.getElementById("etc2Reason").value + ")",
+          amount: Number(document.getElementById("etc2Amount").value || 0),
+          people: parsePeople(document.getElementById("etc2People").value)
         }
       ];
     
