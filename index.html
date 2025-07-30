@@ -207,7 +207,7 @@
 
     function generateShareUrl() {
       const total = Number(document.getElementById("totalAmount").value || 0);
-      const title = document.getElementById("cashTitle").value || "정산 내역";
+      const title = document.getElementById("settlement_title").value || "정산 내역";
   
       const url = new URL(window.location.href);
       url.pathname = "/summary.html";  // 공유용 HTML 페이지 경로
