@@ -187,27 +187,17 @@
       if (settlement_title === "") {
         alert("정산명을 입력해주세요.");
         return;
-      }
-
-      Kakao.Share.createScrapButton({
-        container: '#kakaotalk-sharing-btn',
-        requestUrl: generateShareUrl(),  // 스크랩 할 URL 입력
+      }      
+  
+      // 카카오톡 공유 실행
+      Kakao.Share.sendCustom({
         templateId: 122936,
         templateArgs: {
           "CASH_TITLE": settlement_title,
-          "CASH_CONTENT": window.kakaoShareContent
+          "CASH_CONTENT": "정산 내역 확인",
+          "CASH_PARAMS": generateShareUrl()
         }
       });
-      
-  
-      // 카카오톡 공유 실행
-      // Kakao.Share.sendCustom({
-      //   templateId: 122936,
-      //   templateArgs: {
-      //     "CASH_TITLE": settlement_title,
-      //     "CASH_CONTENT": window.kakaoShareContent
-      //   }
-      // });
     }
 
     function generateShareUrl() {
