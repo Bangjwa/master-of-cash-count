@@ -93,36 +93,36 @@
       const total = Number(document.getElementById("totalAmount").value || 0);
       const sections = [
         {
-          name: "술",
+          key: "술",
           amount: Number(document.getElementById("alcoholAmount").value || 0),
           people: parsePeople(document.getElementById("alcoholPeople").value)
         },
         {
-          name: "안주",
+          key: "안주",
           amount: Number(document.getElementById("foodAmount").value || 0),
           people: parsePeople(document.getElementById("foodPeople").value)
         },
         {
-          name: "음료",
+          key: "음료",
           amount: Number(document.getElementById("beverageAmount").value || 0),
           people: parsePeople(document.getElementById("beveragePeople").value)
         }
       ];
-
+    
       let userMap = {};
       let sectionSum = 0;
-
+    
       sections.forEach(section => {
         const perPerson = section.people.length > 0 ? section.amount / section.people.length : 0;
         sectionSum += section.amount;
-
+    
         section.people.forEach(name => {
-          if (!userMap[name]) userMap[name] = 0;
-          userMap[name] += perPerson;
+          if (!userMap[name]) userMap[name] = { total: 0, breakdown: {} };
+          userMap[name].total += perPerson;
+          userMap[name].breakdown[section.key] = (userMap[name].breakdown[section.key] || 0) + perPerson;
         });
       });
-
-      // Summary Section
+    
       const diff = total - sectionSum;
       let summaryText = `총액: ₩${total.toLocaleString()}<br/>항목 합계: ₩${sectionSum.toLocaleString()}<br/>`;
       if (diff === 0) {
@@ -133,11 +133,14 @@
         summaryText += `<strong>₩${Math.abs(diff).toLocaleString()} 초과입니다.</strong>`;
       }
       document.getElementById("summary").innerHTML = summaryText;
-
-      // Result Section
+    
+      // Result Section with breakdown
       let resultText = "<strong>📋 1인당 정산 금액</strong><br/>";
-      Object.entries(userMap).forEach(([name, value]) => {
-        resultText += `${name}: ₩${Math.round(value).toLocaleString()}<br/>`;
+      Object.entries(userMap).forEach(([name, data]) => {
+        resultText += `<br/><strong>${name}:</strong> ₩${Math.round(data.total).toLocaleString()}<br/>`;
+        Object.entries(data.breakdown).forEach(([section, amount]) => {
+          resultText += `- ${section}: ₩${Math.round(amount).toLocaleString()}<br/>`;
+        });
       });
       document.getElementById("result").innerHTML = resultText;
     }
