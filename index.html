@@ -236,7 +236,8 @@
         url.searchParams.set("breakdown", breakdownParams.join(","));
       }
   
-      return url.toString();
+      // ✅ 도메인 없이 경로만 반환
+      return url.pathname + "?" + url.searchParams.toString();
     }
   </script>
 
