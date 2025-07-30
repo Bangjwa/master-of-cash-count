@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>정산 결과 보기</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    .amount { font-weight: bold; color: #0066cc; }
+  </style>
+</head>
+<body>
+  <h2>📋 정산 결과</h2>
+  <div id="summary"></div>
+
+  <script>
+    function parseQueryParams() {
+      const params = new URLSearchParams(window.location.search);
+      const total = params.get("total");
+      const peopleStr = params.get("people");
+
+      let html = "";
+      if (total) {
+        html += `<p>총 정산 금액: <span class="amount">₩${Number(total).toLocaleString()}</span></p>`;
+      }
+
+      if (peopleStr) {
+        html += `<ul>`;
+        const people = peopleStr.split(",");
+        people.forEach(pair => {
+          const [name, amount] = pair.split(":");
+          html += `<li>${decodeURIComponent(name)}: ₩${Number(amount).toLocaleString()}</li>`;
+        });
+        html += `</ul>`;
+      } else {
+        html += "<p>정산 정보가 없습니다.</p>";
+      }
+
+      document.getElementById("summary").innerHTML = html;
+    }
+
+    window.onload = parseQueryParams;
+  </script>
+</body>
+</html>
