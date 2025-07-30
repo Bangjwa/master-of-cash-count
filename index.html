@@ -151,15 +151,27 @@
       }
       document.getElementById("summary").innerHTML = summaryText;
     
-      // Result Section with breakdown
-      let resultText = "<strong>📋 1인당 정산 금액</strong><br/>";
-      Object.entries(userMap).forEach(([name, data]) => {
-        resultText += `<br/><strong>${name}:</strong> ₩${Math.round(data.total).toLocaleString()}<br/>`;
-        Object.entries(data.breakdown).forEach(([section, amount]) => {
-          resultText += `- ${section}: ₩${Math.round(amount).toLocaleString()}<br/>`;
+        // 📋 결과 출력
+        let resultText = "<strong>📋 1인당 정산 금액</strong><br/>";
+        let shareContent = `총 정산 금액: ₩${total.toLocaleString()}\n\n`;  // 공유용 텍스트 시작
+      
+        Object.entries(userMap).forEach(([name, data]) => {
+          resultText += `<br/><strong>${name}:</strong> ₩${Math.round(data.total).toLocaleString()}<br/>`;
+          shareContent += `• ${name}: ₩${Math.round(data.total).toLocaleString()} (`; // 공유 메시지 시작
+          const breakdowns = Object.entries(data.breakdown).map(
+            ([section, amount]) => `${section}`
+          );
+          resultText += Object.entries(data.breakdown)
+            .map(([section, amount]) => `- ${section}: ₩${Math.round(amount).toLocaleString()}<br/>`)
+            .join("");
+          shareContent += `${breakdowns.join(", ")})\n`;  // 공유 메시지 끝
         });
-      });
-      document.getElementById("result").innerHTML = resultText;
+      
+        document.getElementById("result").innerHTML = resultText;
+      
+        // ✅ 공유용 전역 변수 저장
+        window.kakaoShareContent = shareContent;
+      
     }
 
     function validateAndShare() {
@@ -181,17 +193,6 @@
         }
       });
     }
-
-    let shareContent = `총 정산 금액: ₩${totalAmount.toLocaleString()}\n\n`;
-
-    for (const [name, info] of Object.entries(personMap)) {
-      const amount = Math.round(info.amount);
-      const categories = Array.from(info.categories).join(', ');
-      shareContent += `• ${name}: ₩${amount.toLocaleString()} (${categories})\n`;
-    }
-    
-    // 전역 변수로 저장
-    window.kakaoShareContent = shareContent;
   </script>
 
 </body>
