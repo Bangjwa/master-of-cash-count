@@ -73,14 +73,13 @@
   <div class="container">
     <div class="card">
       <h2>정산명</h2>
-      <p>(예:2025년 1월 1일 화경 미스터유)</p>
-      <p><input type="text" id="cash_title" value="" /></p>
+      <p><input type="text" id="cash_title" placeholder="예: 2025년 1월 1일 화경 미스터유" /></p>
     </div>
 
     <div class="card">
       <h2>정산총액</h2>
       <p>영수증의 정산 총액을 입력하세요.</p>
-      <p><input type="number" id="cash_total" value="" /></p>
+      <p><input type="number" id="cash_total" placeholder="예: 135000" /></p>
     </div>
 
     <div class="card">
@@ -107,6 +106,8 @@
     
     <div class="card">
       <h2>기타 (별도 사유)</h2>
+      <p>사유</p>
+      <input type="text" id="reason_etc" placeholder="예: 늦참" />
       <p>인원 이름 (쉼표로 구분)</p>
       <input type="text" id="people_etc" placeholder="예: 수지" oninput="calculateSectionTotal('etc')" />
     
