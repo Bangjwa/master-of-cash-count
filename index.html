@@ -210,7 +210,7 @@
       const title = document.getElementById("settlement_title").value || "정산 내역";
   
       const url = new URL(window.location.href);
-      url.pathname = "/summary.html";  // 공유용 HTML 페이지 경로
+      url.pathname = "/master-of-cash-count/summary.html";  // 공유용 HTML 페이지 경로
   
       url.searchParams.set("total", total);
       url.searchParams.set("title", encodeURIComponent(title));
