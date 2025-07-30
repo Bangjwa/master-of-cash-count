@@ -118,9 +118,15 @@
     </div>    
 
     <div class="card">
-      <h2>합산</h2>
-      <p>술/안주 정산 <strong>₩1,250,000</strong>입니다.</p>
-      <p>안주 정산 <strong>₩1,250,000</strong>입니다.</p>
+      <h2>합산 요약</h2>
+      <p>술/안주 정산 총액: <strong id="total_drink_summary">₩0</strong></p>
+      <p>안주 정산 총액: <strong id="total_food_summary">₩0</strong></p>
+      <p>기타 정산 총액: <strong id="total_etc_summary">₩0</strong></p>
+      <hr />
+      <p>세부항목 합산 총액: <strong id="total_all_sections">₩0</strong></p>
+      <p>입력된 정산 총액: <strong id="cash_total_display">₩0</strong></p>
+      <p id="compare_result" style="font-weight: bold; color: #d9534f;">금액이 일치하지 않습니다.</p>
+      <p id="difference_result" style="font-weight: bold; color: #999;"></p>
     </div>
 
     <div class="card">
@@ -148,7 +154,7 @@
 </script>
 
 <script>
-  function calculateSectionTotal(type) {
+    function calculateSectionTotal(type) {
     const peopleInput = document.getElementById(`people_${type}`).value;
     const amountInput = parseInt(document.getElementById(`amount_per_person_${type}`).value || "0", 10);
     const peopleList = peopleInput
@@ -158,6 +164,45 @@
 
     const total = peopleList.length * amountInput;
     document.getElementById(`total_${type}`).textContent = `₩${total.toLocaleString()}`;
+    document.getElementById(`total_${type}_summary`).textContent = `₩${total.toLocaleString()}`;
+
+    updateSummary();
+  }
+
+  function updateSummary() {
+    const drink = parseCurrency(document.getElementById('total_drink_summary').textContent);
+    const food = parseCurrency(document.getElementById('total_food_summary').textContent);
+    const etc = parseCurrency(document.getElementById('total_etc_summary').textContent);
+    const totalSectionSum = drink + food + etc;
+
+    document.getElementById('total_all_sections').textContent = `₩${totalSectionSum.toLocaleString()}`;
+
+    const cashTotalInput = parseInt(document.getElementById('cash_total').value || "0", 10);
+    document.getElementById('cash_total_display').textContent = `₩${cashTotalInput.toLocaleString()}`;
+
+    const compareResult = document.getElementById('compare_result');
+    const differenceResult = document.getElementById('difference_result');
+    
+    if (totalSectionSum === cashTotalInput) {
+      compareResult.textContent = '✅ 정산 총액과 일치합니다.';
+      compareResult.style.color = '#28a745';
+      differenceResult.textContent = '';
+    } else {
+      const diff = totalSectionSum - cashTotalInput;
+      const absDiff = Math.abs(diff).toLocaleString();
+      compareResult.textContent = '❌ 금액이 일치하지 않습니다.';
+      compareResult.style.color = '#d9534f';
+    
+      if (diff > 0) {
+        differenceResult.textContent = `💰 세부 항목 총액이 정산 총액보다 ₩${absDiff} 초과되었습니다.`;
+      } else {
+        differenceResult.textContent = `💸 세부 항목 총액이 정산 총액보다 ₩${absDiff} 부족합니다.`;
+      }
+    }
+  }
+
+  function parseCurrency(value) {
+    return parseInt(value.replace(/[₩,]/g, '') || "0", 10);
   }
   
   function validateAndShare() {
@@ -185,6 +230,9 @@
       }
     });
   }
+
+  // 입력값 변경 시 요약 업데이트
+  document.getElementById('cash_total').addEventListener('input', updateSummary);
   
   // Kakao.Share.createCustomButton({
   //   container: '#kakaotalk-sharing-btn',
