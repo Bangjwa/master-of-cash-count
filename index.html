@@ -188,7 +188,7 @@
         return;
       }
 
-      var msgTemplate = settlement_title + "\n" + shareContent;
+      var msgTemplate = settlement_title + "\n" + window.kakaoShareContent;
 
       Kakao.API.request({
         url: '/v2/api/talk/memo/default/send',
